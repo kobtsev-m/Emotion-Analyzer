@@ -1,7 +1,7 @@
 {
   "headers": [
     {
-      "source": "/static/js/*.(wasm|onnx)",
+      "source": "^(?:[\\w]\\:|\\/)(\\/[a-z_\\-\\s0-9\\.]+)+\\.(wasm|onnx)$",
       "headers": [
         {
           "key": "Cross-Origin-Opener-Policy",
