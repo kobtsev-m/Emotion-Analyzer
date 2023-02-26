@@ -14,7 +14,7 @@ const loadDataFile = async (cvFilePath: string, url: string) => {
 export const loadHaarFaceModels = async (): Promise<void> => {
   await loadDataFile(
     'haarcascade_frontalface_default.xml',
-    'static/models/face-detection/haarcascade_frontalface_default.xml'
+    'static/js/models/face-detection/haarcascade_frontalface_default.xml'
   );
   await new Promise<void>((resolve) => {
     setTimeout(() => {

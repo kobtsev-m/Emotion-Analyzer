@@ -2,19 +2,22 @@ import * as ort from 'onnxruntime-web';
 import { getEmotion } from './logic-model.utils';
 import { LABELS_RU, PARAMETERS_EN } from '../constants/emotion.constants';
 
-ort.env.wasm.numThreads = 4;
-
 const sessions: Record<string, ort.InferenceSession> = {};
+
+const sessionOptions: ort.InferenceSession.SessionOptions = {
+  executionProviders: ['wasm'],
+  graphOptimizationLevel: 'all'
+};
 
 const runModel = async (
   preprocessedData: ort.TypedTensor<'float32'>,
   modelVersion: string
 ): Promise<ort.TypedTensor<'float32'>> => {
   if (!sessions[modelVersion]) {
-    sessions[modelVersion] = await ort.InferenceSession.create(`/static/models/${modelVersion}`, {
-      executionProviders: ['wasm'],
-      graphOptimizationLevel: 'all'
-    });
+    sessions[modelVersion] = await ort.InferenceSession.create(
+      `/static/js/models/${modelVersion}`,
+      sessionOptions
+    );
   }
   const session = sessions[modelVersion];
   const feeds: Record<string, ort.TypedTensor<'float32'>> = {};
