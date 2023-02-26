@@ -9,19 +9,19 @@ const VERSION_1 = 6;
 const VERSION_2 = 1;
 
 export const App: React.FC = () => {
-  const [faceModelLoaded, setFaceModelLoaded] = useState(false);
+  const [areModelsLoaded, setAreModelsLoaded] = useState(false);
 
   useEffect(() => {
-    if (faceModelLoaded) {
+    if (areModelsLoaded) {
       return;
     }
     (async () => {
       await Promise.all([loadHaarFaceModels(), loadEmotionModels(VERSION_1, VERSION_2)]);
-      setFaceModelLoaded(true);
+      setAreModelsLoaded(true);
     })();
-  }, [faceModelLoaded]);
+  }, []);
 
-  if (!faceModelLoaded) {
+  if (!areModelsLoaded) {
     return (
       <Backdrop open={true} sx={{ flexDirection: 'column' }}>
         <ClockLoader color='#fff' />
