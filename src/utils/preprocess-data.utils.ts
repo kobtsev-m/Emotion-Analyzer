@@ -1,4 +1,4 @@
-import * as ort from 'onnxruntime-web';
+import { Tensor } from 'onnxjs';
 import Jimp from 'jimp';
 
 const addPaddingToImage = async (
@@ -22,7 +22,7 @@ const addPaddingToImage = async (
   return image;
 };
 
-export const imageDataToTensor = (image: Jimp, dims: number[]): ort.TypedTensor<'float32'> => {
+export const imageDataToTensor = (image: Jimp, dims: number[]): Tensor => {
   // 1. Get buffer data from image and create R, G, and B arrays.
   const imageBufferData = image.bitmap.data;
   const [redArray, greenArray, blueArray] = [
@@ -53,7 +53,7 @@ export const imageDataToTensor = (image: Jimp, dims: number[]): ort.TypedTensor<
   }
 
   // 5. create the tensor object from onnxruntime-web
-  return new ort.Tensor('float32', float32Data, dims);
+  return new Tensor(float32Data, 'float32', dims);
 };
 
 export const getTransformedImageTensorFromPath = async (
@@ -62,7 +62,7 @@ export const getTransformedImageTensorFromPath = async (
   y1: number,
   x2: number,
   y2: number
-): Promise<ort.TypedTensor<'float32'>> => {
+): Promise<Tensor> => {
   const image = await addPaddingToImage(path, x1, y1, x2, y2, 224, 224);
   return imageDataToTensor(image, [1, 3, 224, 224]);
 };

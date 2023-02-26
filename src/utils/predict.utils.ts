@@ -1,38 +1,37 @@
-import * as ort from 'onnxruntime-web';
 import { getEmotion } from './logic-model.utils';
 import { LABELS_RU, PARAMETERS_EN } from '../constants/emotion.constants';
+import { InferenceSession, Tensor } from 'onnxjs';
 
-const sessions: Record<string, ort.InferenceSession> = {};
+const sessions: Record<string, InferenceSession> = {};
 
-const sessionOptions: ort.InferenceSession.SessionOptions = {
-  executionProviders: ['wasm'],
-  graphOptimizationLevel: 'all'
+const getModelVersions = (version1: number, version2: number) => [
+  `v1/emotion-net-v1.${version1}.onnx`,
+  ...PARAMETERS_EN.map((_, i) => `v2/emotion-net-v2.${version2}.${i + 1}.onnx`)
+];
+
+export const loadEmotionModels = (version1: number, version2: number) => {
+  const modelVersions = getModelVersions(version1, version2);
+  return Promise.all(
+    modelVersions.map((modelVersion) => {
+      sessions[modelVersion] = new InferenceSession({ backendHint: 'webgl' });
+      return sessions[modelVersion].loadModel(`models/${modelVersion}`);
+    })
+  );
 };
 
-const runModel = async (
-  preprocessedData: ort.TypedTensor<'float32'>,
-  modelVersion: string
-): Promise<ort.TypedTensor<'float32'>> => {
-  if (!sessions[modelVersion]) {
-    sessions[modelVersion] = await ort.InferenceSession.create(
-      `/static/js/models/${modelVersion}`,
-      sessionOptions
-    );
-  }
+const runModel = async (preprocessedData: Tensor, modelVersion: string): Promise<Tensor> => {
   const session = sessions[modelVersion];
-  const feeds: Record<string, ort.TypedTensor<'float32'>> = {};
-  feeds[session.inputNames[0]] = preprocessedData;
-  const outputData = await session.run(feeds);
-  const output = outputData[session.outputNames[0]];
-  return <ort.TypedTensor<'float32'>>output;
+  const outputMap = await session.run([preprocessedData]);
+  const output = outputMap.values().next().value;
+  return output;
 };
 
-const getArgmax = (prediction: ort.TypedTensor<'float32'>) => {
+const getArgmax = (prediction: Tensor) => {
   let maxValue = -Infinity;
   let maxValueI = -Infinity;
   for (let i = 0; i < prediction.data.length; ++i) {
     if (prediction.data[i] > maxValue) {
-      maxValue = prediction.data[i];
+      maxValue = <number>prediction.data[i];
       maxValueI = i;
     }
   }
@@ -41,18 +40,15 @@ const getArgmax = (prediction: ort.TypedTensor<'float32'>) => {
 
 export const runV1 = async (
   version: number,
-  preprocessedImage: ort.TypedTensor<'float32'>
+  preprocessedImage: Tensor
 ): Promise<[string, null]> => {
   const prediction = await runModel(preprocessedImage, `v1/emotion-net-v1.${version}.onnx`);
   const predictionTarget = getArgmax(prediction);
   return [LABELS_RU[predictionTarget], null];
 };
 
-export const runV2 = async (
-  version: number,
-  preprocessedImage: ort.TypedTensor<'float32'>
-): Promise<[string, any]> => {
-  const predictions: ort.TypedTensor<'float32'>[] = [];
+export const runV2 = async (version: number, preprocessedImage: Tensor): Promise<[string, any]> => {
+  const predictions: Tensor[] = [];
   for (let i = 0; i < PARAMETERS_EN.length; ++i) {
     const prediction = await runModel(
       preprocessedImage,

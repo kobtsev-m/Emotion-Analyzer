@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import * as ort from 'onnxruntime-web';
 import React, { Fragment, useRef, useState } from 'react';
 import Webcam, { WebcamProps } from 'react-webcam';
 import cv from '@techstark/opencv-js';
@@ -8,6 +7,7 @@ import { detectHaarFace } from '../utils/face-detection.utils';
 import { getTransformedImageTensorFromPath } from '../utils/preprocess-data.utils';
 import { parameterEn2Ru } from '../constants/emotion.constants';
 import { toast } from 'react-toastify';
+import { Tensor } from 'onnxjs';
 
 const WEBCAM_W = 320;
 const WEBCAM_H = 200;
@@ -21,7 +21,7 @@ const VIDEO_CONSTRAINTS: WebcamProps['videoConstraints'] = {
 
 interface Props {
   title?: string;
-  predictCallback: (preprocessedImage: ort.TypedTensor<'float32'>) => Promise<[string, any]>;
+  predictCallback: (preprocessedImage: Tensor) => Promise<[string, any]>;
 }
 
 export const WebcamBlock: React.FC<Props> = ({ title, predictCallback }) => {
