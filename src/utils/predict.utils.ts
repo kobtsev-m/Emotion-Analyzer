@@ -11,7 +11,7 @@ const runModel = async (
   modelVersion: string
 ): Promise<ort.TypedTensor<'float32'>> => {
   if (!sessions[modelVersion]) {
-    sessions[modelVersion] = await ort.InferenceSession.create(`/models/${modelVersion}`, {
+    sessions[modelVersion] = await ort.InferenceSession.create(`/static/models/${modelVersion}`, {
       executionProviders: ['wasm'],
       graphOptimizationLevel: 'all'
     });
