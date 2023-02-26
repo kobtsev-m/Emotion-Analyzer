@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Emotion-Analyzer/static/css/main.8e6fd9bb.css",
+    "main.js": "/Emotion-Analyzer/static/js/main.d3180854.js",
+    "static/js/787.f8136847.chunk.js": "/Emotion-Analyzer/static/js/787.f8136847.chunk.js",
+    "static/media/image-q.cjs": "/Emotion-Analyzer/static/media/image-q.b0256d32a181944cff59.cjs",
+    "index.html": "/Emotion-Analyzer/index.html",
+    "main.8e6fd9bb.css.map": "/Emotion-Analyzer/static/css/main.8e6fd9bb.css.map",
+    "main.d3180854.js.map": "/Emotion-Analyzer/static/js/main.d3180854.js.map",
+    "787.f8136847.chunk.js.map": "/Emotion-Analyzer/static/js/787.f8136847.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.8e6fd9bb.css",
+    "static/js/main.d3180854.js"
+  ]
+}
