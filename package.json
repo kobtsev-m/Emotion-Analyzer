@@ -2,6 +2,7 @@
   "name": "emotion-analyzer",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://kobtsev-m.github.io/Emotion-Analyzer",
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
@@ -24,6 +25,7 @@
     "@types/react": "^18.0.25",
     "@types/react-dom": "^18.0.8",
     "cross-env": "^7.0.3",
+    "gh-pages": "^5.0.0",
     "node-polyfill-webpack-plugin": "^2.0.1",
     "prettier": "^2.7.1",
     "react-scripts": "^5.0.1",
@@ -31,7 +33,9 @@
   },
   "scripts": {
     "start": "cross-env BROWSER=none craco start",
-    "build": "craco build"
+    "build": "craco build",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [

@@ -1,6 +1,6 @@
+import { InferenceSession, Tensor } from 'onnxjs';
 import { getEmotion } from './logic-model.utils';
 import { LABELS_RU, PARAMETERS_EN } from '../constants/emotion.constants';
-import { InferenceSession, Tensor } from 'onnxjs';
 
 const sessions: Record<string, InferenceSession> = {};
 
