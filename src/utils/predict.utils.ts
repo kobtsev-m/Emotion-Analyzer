@@ -2,6 +2,10 @@ import * as ort from 'onnxruntime-web';
 import { getEmotion } from './logic-model.utils';
 import { LABELS_RU, PARAMETERS_EN } from '../constants/emotion.constants';
 
+ort.env.wasm.numThreads = 4;
+ort.env.wasm.simd = true;
+ort.env.wasm.proxy = true;
+
 const sessions: Record<string, ort.InferenceSession> = {};
 
 const runModel = async (
