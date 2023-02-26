@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Stack } from '@mui/material';
+import { Backdrop, CircularProgress, Container, Stack } from '@mui/material';
 import { loadHaarFaceModels } from '../utils/face-detection.utils';
 import { WebcamBlock } from './WebcamBlock';
 import { runV1, runV2 } from '../utils/predict.utils';
@@ -8,13 +8,22 @@ export const App: React.FC = () => {
   const [faceModelLoaded, setFaceModelLoaded] = useState(false);
 
   useEffect(() => {
+    if (faceModelLoaded) {
+      return;
+    }
     (async () => {
-      if (!faceModelLoaded) {
-        await loadHaarFaceModels();
-        setFaceModelLoaded(true);
-      }
+      await loadHaarFaceModels();
+      setFaceModelLoaded(true);
     })();
   }, [faceModelLoaded]);
+
+  if (!faceModelLoaded) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress sx={{ color: '#fff' }} />
+      </Backdrop>
+    );
+  }
 
   return (
     <Container maxWidth='xl'>
